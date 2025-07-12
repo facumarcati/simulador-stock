@@ -19,25 +19,25 @@ function main() {
       case 1:
         console.clear();
         verProductos(productos, cantidades);
-        prompt("Presione ENTER para continuar...");
+        prompt("Presione ENTER para continuar");
         console.clear();
         break;
       case 2:
         console.clear();
         registrarVenta();
-        prompt("Presione ENTER para continuar...");
+        prompt("Presione ENTER para continuar");
         console.clear();
         break;
       case 3:
         console.clear();
         reponerStock();
-        prompt("Presione ENTER para continuar...");
+        prompt("Presione ENTER para continuar");
         console.clear();
         break;
       case 4:
         console.clear();
         agregarArticulo();
-        prompt("Presione ENTER para continuar...");
+        prompt("Presione ENTER para continuar");
         console.clear();
         break;
       case 0:
@@ -50,6 +50,8 @@ function main() {
   }
 
   verProductos();
+  prompt("Presione ENTER para finalizar");
+  console.clear();
 }
 
 function verProductos() {
@@ -63,15 +65,18 @@ function verProductos() {
 function registrarVenta() {
   verProductos();
 
-  let producto = parseInt(prompt("Producto vendido"));
-  producto = validarProducto(producto);
+  let producto = validarProducto();
   let productoSeleccionado = productos[producto - 1];
 
   let cantidad = parseInt(prompt("Cantidad vendida"));
 
   let boolCantidad = true;
   while (boolCantidad) {
-    if (cantidad > cantidades[producto - 1] || cantidad <= 0) {
+    if (
+      cantidad > cantidades[producto - 1] ||
+      cantidad <= 0 ||
+      isNaN(cantidad)
+    ) {
       alert("Cantidad no valida");
       cantidad = parseInt(prompt("Cantidad vendida"));
     } else {
@@ -79,6 +84,7 @@ function registrarVenta() {
     }
   }
 
+  console.clear();
   console.log(
     "Seleccionado: " + productoSeleccionado + " - " + cantidad + " ud(s)"
   );
@@ -92,15 +98,14 @@ function registrarVenta() {
 function reponerStock() {
   verProductos();
 
-  let producto = parseInt(prompt("Producto a reponer"));
-  validarProducto(producto);
+  let producto = validarProducto();
   let productoSeleccionado = productos[producto - 1];
 
   let cantidad = parseInt(prompt("Cantidad a reponer"));
 
   let boolCantidad = true;
   while (boolCantidad) {
-    if (cantidad <= 0) {
+    if (cantidad <= 0 || isNaN(cantidad)) {
       alert("Cantidad no valida");
       cantidad = parseInt(prompt("Cantidad a reponer"));
     } else {
@@ -108,6 +113,7 @@ function reponerStock() {
     }
   }
 
+  console.clear();
   console.log(
     "Seleccionado: " + productoSeleccionado + " - " + cantidad + " ud(s)"
   );
@@ -118,12 +124,16 @@ function reponerStock() {
   verProductos();
 }
 
-function validarProducto(producto) {
+function validarProducto() {
+  let producto = parseInt(prompt("Ingresa el producto (ingrese el numero)"));
+
   let boolProducto = true;
   while (boolProducto) {
-    if (producto > productos.length || producto <= 0) {
+    if (producto > productos.length || producto <= 0 || isNaN(producto)) {
       alert("Producto no valido");
-      producto = parseInt(prompt("Vuelva a ingresar el producto"));
+      producto = parseInt(
+        prompt("Vuelva a ingresar el producto (ingrese el numero)")
+      );
     } else {
       boolProducto = false;
     }
@@ -133,10 +143,11 @@ function validarProducto(producto) {
 }
 
 function agregarArticulo() {
-  let productoNuevo = prompt("Ingrese producto para agregar");
+  verProductos();
+
+  let productoNuevo = validarProductoNuevo();
 
   let existe = false;
-
   while (true) {
     existe = false;
 
@@ -152,9 +163,7 @@ function agregarArticulo() {
 
     if (existe) {
       alert("Ya existe ese producto o ese producto es invalido. Ingrese otro.");
-      productoNuevo = prompt("Ingrese producto para agregar")
-        .toLowerCase()
-        .trim();
+      productoNuevo = validarProductoNuevo();
     } else {
       break;
     }
@@ -168,4 +177,16 @@ function agregarArticulo() {
 
   alert("Producto agregado con éxito.");
   verProductos();
+}
+
+function validarProductoNuevo() {
+  let productoNuevo;
+
+  do {
+    productoNuevo = prompt("Ingrese el nombre del producto que quiera agregar");
+  } while (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(productoNuevo));
+
+  productoNuevo = productoNuevo.toLowerCase().trim();
+
+  return productoNuevo;
 }
